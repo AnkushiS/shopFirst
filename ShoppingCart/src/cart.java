@@ -12,13 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-/**
- * Servlet implementation class cart
- */
+
 @WebServlet("/cart")
 public class cart extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	double total = 0;
+	
 	//cartList list = new cartList();
     /**
      * @see HttpServlet#HttpServlet()
@@ -28,9 +26,7 @@ public class cart extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		 HttpSession session = request.getSession();
 	     cartList cl   = (cartList)session.getAttribute("listVal");
@@ -69,17 +65,14 @@ public class cart extends HttpServlet {
 			request.setAttribute("message", line);
 	        
 			 getServletContext().getRequestDispatcher("/output.jsp").forward(request, response);	
-	        
-	        
-	        
+   
 	        
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
-		
+		double total = 0;
+		double totalPrice =0;
 		cartItems items = new cartItems();
 		int quan = Integer.parseInt(request.getParameter("quan"));
 		items.setQuantity(quan);
@@ -112,14 +105,11 @@ public class cart extends HttpServlet {
         	
         	double price = cl.getCart_list().get(i).getPrice();
         	
-        	double totalPrice = price * items.getQuantity();
+        	totalPrice = price * items.getQuantity();
         	items.setTotalPrice(totalPrice);
         
         //	cl.setCart_list(items);
-        	
-        	total = totalPrice + total;
-        	
-        	session.setAttribute("total", total);
+  
         line += "<tr>" 
 				+ "<td>" +cl.getCart_list().get(i).getProd_name()  + "</td>"
 				+ "<td>" + quan + "</td>"
@@ -127,6 +117,8 @@ public class cart extends HttpServlet {
 				+"</tr>"
 				;
         }
+    	total = totalPrice + total;
+    	session.setAttribute("total", total);
 		line += "</table>";
 		request.setAttribute("message", line);
 		String form_back =  "<form action=productList method=post>"
